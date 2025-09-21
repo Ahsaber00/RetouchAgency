@@ -1,0 +1,6 @@
+@RetouchAgency_HostAddress = http://localhost:5271
+
+GET {{RetouchAgency_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
