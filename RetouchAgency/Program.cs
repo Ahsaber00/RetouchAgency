@@ -25,6 +25,9 @@ namespace RetouchAgency
 
             // Register Unit of Work
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            
+            // Register Repositories
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
 
             var app = builder.Build();
 
