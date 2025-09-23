@@ -12,7 +12,7 @@ namespace DAL.Models
     {
         [Key]
         [Column("EventId")]
-        public int EventId { get; set; }
+        public int Id { get; set; }
 
         [ForeignKey("PostedByUser")]
         public int PostedByUserId { get; set; }

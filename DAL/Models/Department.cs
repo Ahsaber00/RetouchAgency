@@ -12,7 +12,7 @@ namespace DAL.Models
     {
         [Key]
         [Column("DepartmentId")]
-        public int DepartmentId { get; set; }
+        public int Id { get; set; }
 
         [Required]
         public string Name { get; set; }

@@ -12,7 +12,7 @@ namespace DAL.Models
     {
         [Key]
         [Column("MemberId")]
-        public int MemberId { get; set; }
+        public int Id { get; set; }
 
         [ForeignKey("User")]
         public int UserId { get; set; }
