@@ -33,9 +33,9 @@ namespace DAL.Models
 
         public DateTime CreatedAt { get; set; }
 
-        public virtual ICollection<Application> Applications { get; set; }
-        public virtual ICollection<Opportunity> Opportunities { get; set; }
-        public virtual ICollection<Event> Events { get; set; }
-        public virtual ICollection<EventBooking> EventBookings { get; set; }
+        public virtual ICollection<Application>? Applications { get; set; }
+        public virtual ICollection<Opportunity>? Opportunities { get; set; }
+        public virtual ICollection<Event>? Events { get; set; }
+        public virtual ICollection<EventBooking>? EventBookings { get; set; }
     }
 }
