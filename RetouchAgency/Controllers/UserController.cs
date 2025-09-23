@@ -37,7 +37,7 @@ public class UserController : ControllerBase
             return BadRequest(ModelState);
         await _userRepository.AddAsync(user);
 
-        return CreatedAtAction(nameof(GetUserById), new { id = user.UserId }, user);
+        return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
     }
 
     [HttpPut("{id}")]
