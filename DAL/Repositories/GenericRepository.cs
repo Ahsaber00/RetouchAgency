@@ -20,7 +20,12 @@ namespace DAL.Repositories
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return  _context.Set<T>().AsNoTracking();
+            return await _context.Set<T>().AsNoTracking().ToListAsync();
+        }
+
+        public IQueryable<T> Query()
+        {
+            return _context.Set<T>().AsNoTracking();
         }
 
         public async Task<T> GetByIdAsync(int id)

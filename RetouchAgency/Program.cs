@@ -31,6 +31,12 @@ namespace RetouchAgency
             // Register Repositories
             builder.Services.AddScoped<IUserManager, UserManager>();
 
+
+
+            //Register Managers
+            builder.Services.AddScoped<IOpportunityManager,OpportunityManager>();
+            
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

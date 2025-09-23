@@ -17,9 +17,6 @@ namespace DAL.Models
         [Required]
         public string Name { get; set; }
 
-        public string Description { get; set; }
-
-        public bool IsHead { get; set; }
         public virtual ICollection<TeamMember> TeamMembers { get; set; }
         public virtual ICollection<Opportunity> Opportunities { get; set; }
     }
