@@ -1,4 +1,6 @@
 
+using BLL.Manager;
+using BLL.Manager.Interfaces;
 using DAL.Interfaces;
 using DAL.Models;
 using DAL.Repositories;
@@ -27,7 +29,7 @@ namespace RetouchAgency
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             
             // Register Repositories
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IUserManager, UserManager>();
 
             var app = builder.Build();
 

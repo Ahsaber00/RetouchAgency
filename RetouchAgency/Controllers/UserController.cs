@@ -2,74 +2,77 @@ using DAL.Repositories;
 using DAL.Models;
 using DAL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using BLL.Manager.Interfaces;
+using BLL.DTOs;
 namespace RetouchAgency.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController : ControllerBase
+public class UserController(IUserManager userManager) : ControllerBase
 {
-    private readonly IUserRepository _userRepository;
-    public UserController(IUserRepository userRepository)
-    {
-        _userRepository = userRepository;
-    }
+    private readonly IUserManager _userManager = userManager;
 
     [HttpGet]
     public async Task<IActionResult> GetAllUsers()
     {
-        var users = await _userRepository.GetAllAsync();
-        return Ok(users);
+        return Ok(await _userManager.GetAllUsersAsync());
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserById(int id)
     {
-        var user = await _userRepository.GetByIdAsync(id);
+        var user = await _userManager.GetUserByIdAsync(id);
         if (user == null)
             return NotFound();
         return Ok(user);
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateUser([FromBody] User user)
+    public async Task<IActionResult> CreateUser([FromBody] UserDTO user)
     {
         if (!ModelState.IsValid || user == null)
             return BadRequest(ModelState);
-        await _userRepository.AddAsync(user);
-
-        return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
+        try{
+            await _userManager.CreateUserAsync(user);
+            return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, new { id = user.Id });
+        }
+        catch(InvalidOperationException ex)
+        {
+            return Conflict(ex.Message); // 409 Conflict
+        }
+        catch(ArgumentException ex)
+        {
+            return BadRequest(ex.Message); // 400 Bad Request
+        }
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateUser(int id, [FromBody] User user)
+    public async Task<IActionResult> UpdateUser(int id, [FromBody] UserDTO user)
     {
-        // if (user == null || id != user.UserId || !ModelState.IsValid)
-        //     return BadRequest(ModelState);
         if (user == null)
             return BadRequest("User data is null.");
         if (!ModelState.IsValid)
-            return BadRequest("another error");
-        var existingUser = await _userRepository.GetByIdAsync(id);
-        if (existingUser == null)
-            return NotFound();
-        existingUser.FirstName = user.FirstName;
-        existingUser.LastName = user.LastName;
-        existingUser.Email = user.Email;
-        existingUser.PasswordHash = user.PasswordHash;
-        existingUser.GoogleId = user.GoogleId;
-        existingUser.AuthMethod = user.AuthMethod;
-        existingUser.Role = user.Role;
-        _userRepository.Update(existingUser);
+            return BadRequest();
+        try{
+            await _userManager.UpdateUserAsync(id, user);
+        }
+        catch(KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
         return NoContent(); // 204 No Content
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
-        var existingUser = await _userRepository.GetByIdAsync(id);
-        if (existingUser == null)
-            return NotFound();
-        await _userRepository.DeleteAsync(id);
+        try{
+            await _userManager.DeleteUserAsync(id);
+        }
+        catch(KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
         return NoContent(); // 204 No Content
     }
 }

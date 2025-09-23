@@ -11,19 +11,20 @@ namespace DAL.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationContext _context;
-        public IGenericRepository<Service> Services { get; }
 
-        public IGenericRepository<TeamMember> TeamMembers { get; }
+        public IServiceRepository Services {get;}
 
-        public IGenericRepository<Opportunity> Opportunities { get; }
+        public ITeamMemberRepository TeamMembers {get;}
 
-        public IGenericRepository<Event> Events { get; }
+        public IOpportunityRepository Opportunities {get;}
 
-        public IGenericRepository<Application> Applications { get; }
+        public IEventRepository Events {get;}
 
-        public IGenericRepository<EventBooking> EventBookings { get; }
+        public IApplicationRepository Applications {get;}
 
-        public IGenericRepository<User> Users { get; }
+        public IEventBookingRepository EventBookings {get;}
+
+        public IUserRepository Users {get;}
         public UnitOfWork(ApplicationContext context)
         {
             _context = context;
