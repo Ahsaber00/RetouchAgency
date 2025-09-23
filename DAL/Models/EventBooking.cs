@@ -12,7 +12,7 @@ namespace DAL.Models
     {
         [Key]
         [Column("BookingId")]
-        public int BookingId { get; set; }
+        public int Id { get; set; }
 
         [ForeignKey("User")]
         public int? UserId { get; set; }
