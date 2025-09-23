@@ -11,7 +11,8 @@ namespace DAL.Models
     public class EventBooking
     {
         [Key]
-        public int BookingId { get; set; }
+        [Column("BookingId")]
+        public int Id { get; set; }
 
         [ForeignKey("User")]
         public int? UserId { get; set; }

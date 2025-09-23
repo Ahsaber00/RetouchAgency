@@ -11,7 +11,8 @@ namespace DAL.Models
     public class TeamMember
     {
         [Key]
-        public int MemberId { get; set; }
+        [Column("MemberId")]
+        public int Id { get; set; }
 
         [ForeignKey("User")]
         public int UserId { get; set; }

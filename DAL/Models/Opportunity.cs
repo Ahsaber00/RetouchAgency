@@ -11,7 +11,8 @@ namespace DAL.Models
     public class Opportunity
     {
         [Key]
-        public int OpportunityId { get; set; }
+        [Column("OpportunityId")]
+        public int Id { get; set; }
 
         [ForeignKey("Department")]
         public int DepartmentId { get; set; }

@@ -11,7 +11,8 @@ namespace DAL.Models
     public class Event
     {
         [Key]
-        public int EventId { get; set; }
+        [Column("EventId")]
+        public int Id { get; set; }
 
         [ForeignKey("PostedByUser")]
         public int PostedByUserId { get; set; }
