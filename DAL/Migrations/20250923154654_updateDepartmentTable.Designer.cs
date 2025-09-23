@@ -4,6 +4,7 @@ using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20250923154654_updateDepartmentTable")]
+    partial class updateDepartmentTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,53 +73,6 @@ namespace DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Departments");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Camera & Video Editing"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Marketing"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Graphic Design"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Operation"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "PR"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Sales"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "Web Development"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "HR"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Name = "Marketing Manager"
-                        });
                 });
 
             modelBuilder.Entity("DAL.Models.Event", b =>
@@ -218,96 +174,6 @@ namespace DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Opportunities");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ApplicationEndDate = new DateTime(2025, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ApplicationStartDate = new DateTime(2025, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DepartmentId = 1,
-                            Status = "open",
-                            Title = "Video Editing Internship",
-                            Type = "internship",
-                            UserId = 4
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ApplicationEndDate = new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ApplicationStartDate = new DateTime(2025, 9, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DepartmentId = 2,
-                            Status = "open",
-                            Title = "Marketing Coordinator Job Offer",
-                            Type = "job offer",
-                            UserId = 4
-                        },
-                        new
-                        {
-                            Id = 3,
-                            ApplicationEndDate = new DateTime(2025, 9, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ApplicationStartDate = new DateTime(2025, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DepartmentId = 3,
-                            Status = "open",
-                            Title = "Graphic Design Internship",
-                            Type = "internship",
-                            UserId = 4
-                        },
-                        new
-                        {
-                            Id = 4,
-                            ApplicationEndDate = new DateTime(2025, 9, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ApplicationStartDate = new DateTime(2025, 9, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DepartmentId = 4,
-                            Status = "open",
-                            Title = "Operations Assistant Job Offer",
-                            Type = "job offer",
-                            UserId = 4
-                        },
-                        new
-                        {
-                            Id = 5,
-                            ApplicationEndDate = new DateTime(2025, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ApplicationStartDate = new DateTime(2025, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DepartmentId = 5,
-                            Status = "open",
-                            Title = "PR Internship",
-                            Type = "internship",
-                            UserId = 4
-                        },
-                        new
-                        {
-                            Id = 6,
-                            ApplicationEndDate = new DateTime(2025, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ApplicationStartDate = new DateTime(2025, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DepartmentId = 6,
-                            Status = "open",
-                            Title = "Sales Executive Job Offer",
-                            Type = "job offer",
-                            UserId = 4
-                        },
-                        new
-                        {
-                            Id = 7,
-                            ApplicationEndDate = new DateTime(2025, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ApplicationStartDate = new DateTime(2025, 9, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DepartmentId = 7,
-                            Status = "open",
-                            Title = "Web Development Internship",
-                            Type = "internship",
-                            UserId = 4
-                        },
-                        new
-                        {
-                            Id = 8,
-                            ApplicationEndDate = new DateTime(2025, 9, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ApplicationStartDate = new DateTime(2025, 9, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DepartmentId = 8,
-                            Status = "open",
-                            Title = "HR Specialist Job Offer",
-                            Type = "job offer",
-                            UserId = 4
-                        });
                 });
 
             modelBuilder.Entity("DAL.Models.Service", b =>
