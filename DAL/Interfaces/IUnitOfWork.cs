@@ -9,13 +9,13 @@ namespace DAL.Interfaces
 {
     public interface IUnitOfWork
     {
-        IGenericRepository<Service> Services { get; }
-        IGenericRepository<TeamMember> TeamMembers { get; }
+        IServiceRepository Services { get; }
+        ITeamMemberRepository TeamMembers { get; }
         IGenericRepository<Opportunity> Opportunities { get; }
-        IGenericRepository<Event> Events { get; }
-        IGenericRepository<Application> Applications { get; }
-        IGenericRepository<EventBooking> EventBookings { get; }
-        IGenericRepository<User> Users { get; }
+        IEventRepository Events { get; }
+        IApplicationRepository Applications { get; }
+        IEventBookingRepository EventBookings { get; }
+        IUserRepository Users { get; }
 
         Task<int> SaveAllAsync();
     }
