@@ -11,7 +11,7 @@ namespace DAL.Interfaces
     {
         IServiceRepository Services { get; }
         ITeamMemberRepository TeamMembers { get; }
-        IOpportunityRepository Opportunities { get; }
+        IGenericRepository<Opportunity> Opportunities { get; }
         IEventRepository Events { get; }
         IApplicationRepository Applications { get; }
         IEventBookingRepository EventBookings { get; }

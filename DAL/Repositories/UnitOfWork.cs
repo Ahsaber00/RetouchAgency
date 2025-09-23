@@ -16,7 +16,7 @@ namespace DAL.Repositories
 
         public ITeamMemberRepository TeamMembers {get;}
 
-        public IOpportunityRepository Opportunities {get;}
+        public IGenericRepository<Opportunity> Opportunities {get;}
 
         public IEventRepository Events {get;}
 
