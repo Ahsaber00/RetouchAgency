@@ -1,4 +1,4 @@
-﻿using BLL.Dto;
+﻿using BLL.DTOs;
 using BLL.Manager.Interfaces;
 using DAL.Interfaces;
 using DAL.Models;

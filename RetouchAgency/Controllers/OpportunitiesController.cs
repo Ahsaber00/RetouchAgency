@@ -1,4 +1,4 @@
-﻿using BLL.Dto;
+﻿using BLL.DTOs;
 using BLL.Manager;
 using BLL.Manager.Interfaces;
 using Microsoft.AspNetCore.Http;
