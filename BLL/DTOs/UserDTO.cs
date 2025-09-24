@@ -1,3 +1,5 @@
+using DAL.Models;
+
 namespace BLL.DTOs
 {
     public class UserDTO
@@ -8,8 +10,8 @@ namespace BLL.DTOs
         public string Email { get; set; }
         public string Password { get; set; } // Plain password for creation/update, will be hashed in business layer
         public string GoogleId { get; set; }
-        public string AuthMethod { get; set; } = "local";
-        public string Role { get; set; } = "applicant";
+        public string AuthMethod { get; set; } = UserAuthMethod.Local;
+        public string Role { get; set; } = UserRole.Applicant;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

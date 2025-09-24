@@ -9,5 +9,6 @@ namespace BLL.Manager.Interfaces
         Task<int> CreateUserAsync(UserDTO userDTO);
         Task UpdateUserAsync(int id, UserDTO userUpdateDto);
         Task DeleteUserAsync(int id);
+        Task<string?> LoginUserAsync(UserLoginDTO loginDto);
     }
 }
