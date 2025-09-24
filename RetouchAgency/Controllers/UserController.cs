@@ -4,7 +4,7 @@ using DAL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using BLL.Manager.Interfaces;
 using BLL.DTOs;
-namespace RetouchAgency.Controllers;
+namespace ApiRetouchAgency.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

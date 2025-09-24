@@ -1,10 +1,14 @@
 
+using System.Text;
+using BLL;
 using BLL.Manager;
 using BLL.Manager.Interfaces;
 using DAL.Interfaces;
 using DAL.Models;
 using DAL.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace RetouchAgency
 {
@@ -28,6 +32,23 @@ namespace RetouchAgency
             // Register Unit of Work
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             
+            var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>();
+            builder.Services.AddSingleton(jwtOptions);
+            
+            builder.Services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtOptions.Issuer,
+                    ValidateAudience = true,
+                    ValidAudience = jwtOptions.Audience,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey)),
+                };
+            });
+
             // Register Repositories
             builder.Services.AddScoped<IUserManager, UserManager>();
 

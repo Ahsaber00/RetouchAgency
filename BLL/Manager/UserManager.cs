@@ -1,16 +1,21 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using System.Text.RegularExpressions;
 using BLL.DTOs;
 using BLL.Manager.Interfaces;
 using DAL.Interfaces;
 using DAL.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 
 namespace BLL.Manager
 {
-    public class UserManager(IUnitOfWork unitOfWork) : IUserManager
+    public class UserManager(IUnitOfWork unitOfWork, JwtOptions jwtOptions) : IUserManager
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly JwtOptions _jwtOptions = jwtOptions;
 
         public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
         {
@@ -49,7 +54,7 @@ namespace BLL.Manager
             var existingUsers = await _unitOfWork.Users.GetByEmailAsync(userDTO.Email);
             if (existingUsers != null)
                 throw new InvalidOperationException("A user with this email already exists.");
-            
+
             var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
             if (!emailRegex.IsMatch(userDTO.Email))
                 throw new ArgumentException("Invalid email format.");
@@ -104,6 +109,39 @@ namespace BLL.Manager
             await _unitOfWork.Users.DeleteAsync(id);
             await _unitOfWork.SaveAllAsync();
             return;
+        }
+
+        public async Task<string?> LoginUserAsync(UserLoginDTO loginDto)
+        {
+            var user = await _unitOfWork.Users.GetByEmailAsync(loginDto.Email);
+            if (user == null)
+                return null;
+
+            var hasher = new PasswordHasher<User>();
+            var result = hasher.VerifyHashedPassword(user, user.PasswordHash, loginDto.Password);
+            if (result == PasswordVerificationResult.Failed)
+                return null;
+
+            var claims = new List<Claim>
+            {
+                new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new (ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new (ClaimTypes.Email, user.Email),
+                new (ClaimTypes.GivenName, user.FirstName),
+                new (ClaimTypes.Role, user.Role),
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: _jwtOptions.Issuer,
+                audience: _jwtOptions.Audience,
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(_jwtOptions.Lifetime),
+                signingCredentials: new SigningCredentials(
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SigningKey)),
+                    SecurityAlgorithms.HmacSha256
+                )
+            );
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
