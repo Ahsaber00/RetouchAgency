@@ -48,6 +48,7 @@ namespace RetouchAgency
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey)),
                 };
             });
+            builder.Services.AddAuthorization();
 
             // Register Repositories
             builder.Services.AddScoped<IUserManager, UserManager>();

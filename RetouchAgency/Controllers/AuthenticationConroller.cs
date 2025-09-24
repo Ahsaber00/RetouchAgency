@@ -4,9 +4,11 @@ using DAL.Interfaces;
 using BLL.Manager.Interfaces;
 using BLL.DTOs;
 using DAL.Models;
+using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
 [Route("api/auth")]
+[AllowAnonymous]
 public class AuthenticationController(IUserManager userManager) : ControllerBase
 {
     IUserManager _userManager = userManager;
