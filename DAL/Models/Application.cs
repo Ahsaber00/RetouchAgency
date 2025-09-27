@@ -19,7 +19,8 @@ namespace DAL.Models
 
         [ForeignKey("Opportunity")]
         public int OpportunityId { get; set; }
-
+        public string ApplicantPhoneNumber {  get; set; }
+        public string ApplicantUniversity {  get; set; }
         public string ResumeUrl { get; set; }
 
         public string Status { get; set; } // 'Submitted', 'Reviewed', 'Hired'
