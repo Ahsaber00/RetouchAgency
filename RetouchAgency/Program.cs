@@ -50,14 +50,12 @@ namespace RetouchAgency
             });
             builder.Services.AddAuthorization();
 
-            // Register Repositories
-            builder.Services.AddScoped<IUserManager, UserManager>();
-
-
 
             //Register Managers
             builder.Services.AddScoped<IOpportunityManager,OpportunityManager>();
-            
+            builder.Services.AddScoped<IUserManager, UserManager>();
+            builder.Services.AddScoped<IApplicationManager, ApplicationManager>();
+
 
             var app = builder.Build();
 

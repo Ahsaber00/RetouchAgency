@@ -109,10 +109,8 @@ namespace BLL.Manager
             _unitOfWork.Opportunities.Update(opportunity);
             await _unitOfWork.SaveAllAsync();
 
-            var result = new OpportunityDto(opportunity);
+            return new OpportunityDto(opportunity);
             
-
-            return result;
         }
     }
 }
