@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using BLL.Manager.Interfaces;
 using BLL.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using RetouchAgency.Authorization;
 namespace ApiRetouchAgency.Controllers;
 [ApiController]
 [Route("api/[controller]")]
@@ -13,14 +14,14 @@ public class UserController(IUserManager userManager) : ControllerBase
     private readonly IUserManager _userManager = userManager;
 
     [HttpGet]
-  
-    [Authorize(Roles = UserRole.Admin)]  public async Task<IActionResult> GetAllUsers()
+    [Authorize(Roles = UserRole.Admin)]
+    public async Task<IActionResult> GetAllUsers()
     {
         return Ok(await _userManager.GetAllUsersAsync());
     }
 
     [HttpGet("{id}")]
-    [Authorize]
+    [AdminOrOwner] // This replaces [Authorize] and allows admin or user with matching ID
     public async Task<IActionResult> GetUserById(int id)
     {
         var user = await _userManager.GetUserByIdAsync(id);
@@ -30,28 +31,29 @@ public class UserController(IUserManager userManager) : ControllerBase
     }
 
     [HttpPost]
-  
-    [Authorize(Roles = UserRole.Admin)]  public async Task<IActionResult> CreateUser([FromBody] UserDTO user)
+    [Authorize(Roles = UserRole.Admin)]
+    public async Task<IActionResult> CreateUser([FromBody] UserDTO user)
     {
         if (!ModelState.IsValid || user == null)
             return BadRequest(ModelState);
-        try{
- 
-                   await _userManager.CreateUserAsync(user);
+        try
+        {
+
+            await _userManager.CreateUserAsync(user);
             return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, new { id = user.Id });
         }
-        catch(InvalidOperationException ex)
+        catch (InvalidOperationException ex)
         {
             return Conflict(ex.Message); // 409 Conflict
         }
-        catch(ArgumentException ex)
+        catch (ArgumentException ex)
         {
             return BadRequest(ex.Message); // 400 Bad Request
         }
     }
 
     [HttpPut("{id}")]
-    [Authorize]
+    [AdminOrOwner] // This replaces [Authorize] and allows admin or user with matching ID
     public async Task<IActionResult> UpdateUser(int id, [FromBody] UserDTO user)
     {
         if (user == null)
@@ -69,7 +71,7 @@ public class UserController(IUserManager userManager) : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize]
+    [AdminOrOwner] // This replaces [Authorize] and allows admin or user with matching ID
     public async Task<IActionResult> DeleteUser(int id)
     {
         try {

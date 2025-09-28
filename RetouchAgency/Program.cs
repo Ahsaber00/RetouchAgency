@@ -7,8 +7,10 @@ using DAL.Interfaces;
 using DAL.Models;
 using DAL.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using RetouchAgency.Authorization;
 
 namespace RetouchAgency
 {
@@ -33,6 +35,8 @@ namespace RetouchAgency
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             
             var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>();
+            if (jwtOptions == null)
+                throw new InvalidOperationException("JWT configuration is missing.");
             builder.Services.AddSingleton(jwtOptions);
             
             builder.Services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
@@ -48,7 +52,20 @@ namespace RetouchAgency
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey)),
                 };
             });
-            builder.Services.AddAuthorization();
+            
+            builder.Services.AddAuthorization(options =>
+            {
+                // Register AdminOrOwner policy for default "id" parameter
+                options.AddPolicy("AdminOrOwner_id", policy =>
+                    policy.Requirements.Add(new AdminOrOwnerRequirement("id")));
+                    
+                // You can add more policies for different parameter names if needed
+                // options.AddPolicy("AdminOrOwner_userId", policy =>
+                //     policy.Requirements.Add(new AdminOrOwnerRequirement("userId")));
+            });
+            
+            // Register the authorization handler
+            builder.Services.AddScoped<IAuthorizationHandler, AdminOrOwnerHandler>();
 
             // Register Repositories
             builder.Services.AddScoped<IUserManager, UserManager>();

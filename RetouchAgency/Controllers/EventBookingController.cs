@@ -4,6 +4,7 @@ using BLL.Manager.Interfaces;
 using DAL.Interfaces;
 using BLL.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using RetouchAgency.Authorization;
 
 namespace RetouchAgency.Controllers;
 
@@ -50,7 +51,7 @@ public class EventBookingController(IEventBookingManager eventBookingManager) : 
     }
 
     [HttpPost]
-    [Authorize(Roles = UserRole.Applicant)]
+    [AdminOrOwner("UserId")] // Admin can book for anyone, users can only book for themselves
     public async Task<IActionResult> Book([FromBody] EventBookingDTO booking)
     {
         if (!ModelState.IsValid)
