@@ -52,12 +52,15 @@ namespace RetouchAgency
 
             // Register Repositories
             builder.Services.AddScoped<IUserManager, UserManager>();
-
+            builder.Services.AddScoped<IEventBookingManager, EventBookingManager>();
 
 
             //Register Managers
             builder.Services.AddScoped<IOpportunityManager,OpportunityManager>();
             
+            
+            // Register Repositories
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
 
             var app = builder.Build();
 
@@ -70,6 +73,7 @@ namespace RetouchAgency
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

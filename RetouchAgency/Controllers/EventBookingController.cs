@@ -14,6 +14,7 @@ public class EventBookingController(IEventBookingManager eventBookingManager) : 
     private readonly IEventBookingManager _eventBookingManager = eventBookingManager;
 
     [HttpGet]
+    [Authorize(Roles = UserRole.Admin)]
     public async Task<IActionResult> GetAll()
     {
         var bookings = await _eventBookingManager.GetAllEventBookingsAsync();
@@ -21,6 +22,7 @@ public class EventBookingController(IEventBookingManager eventBookingManager) : 
     }
 
     [HttpGet("{id}")]
+    [Authorize(Roles = UserRole.Admin)]
     public async Task<IActionResult> GetByIdAsync(int id)
     {
         var booking = await _eventBookingManager.GetEventBookingByIdAsync(id);
