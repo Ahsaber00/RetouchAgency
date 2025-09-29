@@ -5,6 +5,7 @@ using DAL.Interfaces;
 using BLL.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using RetouchAgency.Authorization;
+using System.Security.Claims;
 
 namespace RetouchAgency.Controllers;
 
@@ -33,6 +34,7 @@ public class EventBookingController(IEventBookingManager eventBookingManager) : 
     }
 
     [HttpGet("user/{id}")]
+    [AdminOrOwner]
     public async Task<IActionResult> GetBookingsByUserIdAsync(int id)
     {
         var booking = await _eventBookingManager.GetBookingsByUserIdAsync(id);
@@ -42,20 +44,27 @@ public class EventBookingController(IEventBookingManager eventBookingManager) : 
     }
 
     [HttpGet("event/{id}")]
+    [Authorize(Roles = UserRole.Admin)]
     public async Task<IActionResult> GetBookingsByEventIdAsync(int id)
     {
-        var booking = await _eventBookingManager.GetEventBookingByIdAsync(id);
+        var booking = await _eventBookingManager.GetBookingsByEventIdAsync(id);
         if (booking == null)
             return NotFound();
         return Ok(booking);
     }
 
     [HttpPost]
-    [AdminOrOwner("UserId")] // Admin can book for anyone, users can only book for themselves
+    [Authorize]
     public async Task<IActionResult> Book([FromBody] EventBookingDTO booking)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
+
+        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        var isAdmin = User.IsInRole(UserRole.Admin);
+        if (!isAdmin && (userIdClaim == null || userIdClaim != booking.UserId.ToString()))
+            return Forbid();
+    
         try
         {
             await _eventBookingManager.BookEventAsync(booking);
@@ -64,7 +73,11 @@ public class EventBookingController(IEventBookingManager eventBookingManager) : 
         {
             return Conflict(new { message = ex.Message });
         }
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = booking.EventId }, booking);
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        return Created();
     }
 
     [HttpDelete("{id}")]

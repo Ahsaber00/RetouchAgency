@@ -13,9 +13,9 @@ namespace DAL.Repositories
     {
         public readonly ApplicationContext _context = context;
 
-        public Task<bool> CheckBookingExistsAsync(int eventId, int userId)
+        public async Task<bool> CheckBookingExistsAsync(int eventId, int userId)
         {
-            return _context.EventBookings
+            return await _context.EventBookings
                 .AnyAsync(b => b.EventId == eventId && b.UserId == userId);
         }
 
