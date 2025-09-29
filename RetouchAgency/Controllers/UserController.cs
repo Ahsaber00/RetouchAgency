@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using BLL.Manager.Interfaces;
 using BLL.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using RetouchAgency.Authorization;
 namespace ApiRetouchAgency.Controllers;
-
 [ApiController]
 [Route("api/[controller]")]
 public class UserController(IUserManager userManager) : ControllerBase
@@ -21,16 +21,9 @@ public class UserController(IUserManager userManager) : ControllerBase
     }
 
     [HttpGet("{id}")]
-    [Authorize]
+    [AdminOrOwner] // This replaces [Authorize] and allows admin or user with matching ID
     public async Task<IActionResult> GetUserById(int id)
     {
-        var token = Request.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "");
-        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
-        var userRoleClaim = User.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
-        if (userIdClaim == null)
-            return Unauthorized("Invalid token.");
-        if (userRoleClaim != UserRole.Admin && userIdClaim != id.ToString())
-            return Forbid("You do not have permission to access this resource.");
         var user = await _userManager.GetUserByIdAsync(id);
         if (user == null)
             return NotFound();
@@ -45,6 +38,7 @@ public class UserController(IUserManager userManager) : ControllerBase
             return BadRequest(ModelState);
         try
         {
+
             await _userManager.CreateUserAsync(user);
             return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, new { id = user.Id });
         }
@@ -59,22 +53,14 @@ public class UserController(IUserManager userManager) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize]
+    [AdminOrOwner] // This replaces [Authorize] and allows admin or user with matching ID
     public async Task<IActionResult> UpdateUser(int id, [FromBody] UserDTO user)
     {
         if (user == null)
             return BadRequest("User data is null.");
         if (!ModelState.IsValid)
             return BadRequest();
-        var token = Request.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "");
-        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
-        var userRoleClaim = User.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
-        if (userIdClaim == null)
-            return Unauthorized("Invalid token.");
-        if (userRoleClaim != UserRole.Admin && userIdClaim != id.ToString())
-            return Forbid("You do not have permission to access this resource.");
-        try
-        {
+        try {
             await _userManager.UpdateUserAsync(id, user);
         }
         catch (KeyNotFoundException ex)
@@ -85,18 +71,11 @@ public class UserController(IUserManager userManager) : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize]
+    [AdminOrOwner] // This replaces [Authorize] and allows admin or user with matching ID
     public async Task<IActionResult> DeleteUser(int id)
     {
-        var token = Request.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "");
-        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
-        var userRoleClaim = User.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
-        if (userIdClaim == null)
-            return Unauthorized("Invalid token.");
-        if (userRoleClaim != UserRole.Admin && userIdClaim != id.ToString())
-            return Forbid("You do not have permission to access this resource.");
-        try
-        {
+        try {
+
             await _userManager.DeleteUserAsync(id);
         }
         catch (KeyNotFoundException ex)
@@ -104,5 +83,5 @@ public class UserController(IUserManager userManager) : ControllerBase
             return NotFound(ex.Message);
         }
         return NoContent(); // 204 No Content
+        }
     }
-}

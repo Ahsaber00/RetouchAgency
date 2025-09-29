@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 [AllowAnonymous]
 public class AuthenticationController(IUserManager userManager) : ControllerBase
 {
-    IUserManager _userManager = userManager;
+    readonly IUserManager _userManager = userManager;
 
     [HttpPost("signup")]
     public async Task<IActionResult> SignUp([FromBody] UserSignUpDTO user)

@@ -122,26 +122,40 @@ namespace BLL.Manager
             if (result == PasswordVerificationResult.Failed)
                 return null;
 
-            var claims = new List<Claim>
-            {
-                new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new (ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new (ClaimTypes.Email, user.Email),
-                new (ClaimTypes.GivenName, user.FirstName),
-                new (ClaimTypes.Role, user.Role),
-            };
+            var tokenHandler = new JwtSecurityTokenHandler();
 
-            var token = new JwtSecurityToken(
-                issuer: _jwtOptions.Issuer,
-                audience: _jwtOptions.Audience,
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(_jwtOptions.Lifetime),
-                signingCredentials: new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SigningKey)),
-                    SecurityAlgorithms.HmacSha256
-                )
+            var claimsIdentity = new ClaimsIdentity(
+                [
+                    new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new (ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new (ClaimTypes.Email, user.Email),
+                    new (ClaimTypes.GivenName, user.FirstName),
+                    new (ClaimTypes.Role, user.Role),
+                ]
             );
-            return new JwtSecurityTokenHandler().WriteToken(token);
+
+            // var token = new JwtSecurityToken(
+            //     issuer: _jwtOptions.Issuer,
+            //     audience: _jwtOptions.Audience,
+            //     claims: claims,
+            //     expires: DateTime.Now.AddMinutes(_jwtOptions.Lifetime),
+            //     signingCredentials: new SigningCredentials(
+            //         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SigningKey)),
+            //         SecurityAlgorithms.HmacSha256
+            //     )
+            // );
+            return tokenHandler.WriteToken(tokenHandler.CreateToken( new SecurityTokenDescriptor
+                {
+                    Expires = DateTime.Now.AddMinutes(_jwtOptions.Lifetime),
+                    Issuer = _jwtOptions.Issuer,
+                    Audience = _jwtOptions.Audience,
+                    SigningCredentials = new SigningCredentials(
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SigningKey)),
+                        SecurityAlgorithms.HmacSha256
+                    ),
+                    Subject = claimsIdentity
+                }
+            ));
         }
     }
 }
