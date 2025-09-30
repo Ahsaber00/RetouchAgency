@@ -1,7 +1,7 @@
 ﻿using BLL.DTOs;
-using BLL.Manager;
 using BLL.Manager.Interfaces;
-using Microsoft.AspNetCore.Http;
+using DAL.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiRetouchAgency.Controllers
@@ -17,7 +17,7 @@ namespace ApiRetouchAgency.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetOpportunities([FromQuery]string? opportunityType=null)
+        public async Task<IActionResult> GetOpportunities([FromQuery] string? opportunityType = null)
         {
             var opportunities = await _opportunityManager.GetAllOpportunitiesAsync(opportunityType);
             return Ok(opportunities);
@@ -35,6 +35,7 @@ namespace ApiRetouchAgency.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<IActionResult> Add([FromBody] CreateOpportunityDto dto)
         {
             try
@@ -50,6 +51,7 @@ namespace ApiRetouchAgency.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<IActionResult> Update([FromRoute]int id,[FromBody]UpdateOpportunityDto dto)
         {
             try
@@ -64,6 +66,7 @@ namespace ApiRetouchAgency.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<IActionResult> Delete([FromRoute]int id)
         {
             var result=await _opportunityManager.DeleteOpportunityAsync(id);

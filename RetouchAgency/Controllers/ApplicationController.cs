@@ -1,8 +1,11 @@
 ﻿using BLL.DTOs;
 using BLL.Manager.Interfaces;
 using DAL.Interfaces;
+using DAL.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RetouchAgency.Authorization;
 
 namespace ApiRetouchAgency.Controllers
 {
@@ -18,13 +21,15 @@ namespace ApiRetouchAgency.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<IActionResult> GetApplications([FromQuery] string? status = null)
         {
-            var applications= await _applicationManager.GetAllApplicationsAsync(status);
+            var applications = await _applicationManager.GetAllApplicationsAsync(status);
             return Ok(applications);
         }
 
         [HttpGet("opportunity/{opportunityId:int}")]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<IActionResult> GetApplicationsPerOpportunity([FromRoute] int opportunityId)
         {
             var applications = await _applicationManager.GetApplicationsByOpportunityAsync(opportunityId);
@@ -32,6 +37,7 @@ namespace ApiRetouchAgency.Controllers
         }
 
         [HttpGet("user/{userId:int}")]
+        [AdminOrOwner("userId")]
         public async Task<IActionResult> GetApplicationsPerUser([FromRoute] int userId)
         {
             var applications = await _applicationManager.GetApplicationsByUserAsync(userId);
@@ -41,8 +47,8 @@ namespace ApiRetouchAgency.Controllers
         [HttpGet("{applicationId:int}")]
         public async Task<IActionResult> GetById([FromRoute] int applicationId)
         {
-            var application=await _applicationManager.GetApplicationByIdAsync(applicationId);
-            if(application==null)
+            var application = await _applicationManager.GetApplicationByIdAsync(applicationId);
+            if (application == null)
             {
                 return NotFound();
             }
@@ -51,6 +57,7 @@ namespace ApiRetouchAgency.Controllers
 
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateApplication(CreateApplicationDto dto)
         {
             try
@@ -62,11 +69,12 @@ namespace ApiRetouchAgency.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            
+
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateApplication(int id,UpdateApplicationDto dto)
+        [Authorize]
+        public async Task<IActionResult> UpdateApplication(int id, UpdateApplicationDto dto)
         {
             try
             {
@@ -80,18 +88,15 @@ namespace ApiRetouchAgency.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteApplication([FromRoute]int id)
+        [Authorize(Roles = UserRole.Admin)]
+        public async Task<IActionResult> DeleteApplication([FromRoute] int id)
         {
-            var result= await _applicationManager.DeleteApplicationAsync(id);
-            if(result is true)
+            var result = await _applicationManager.DeleteApplicationAsync(id);
+            if (result is true)
             {
                 return Ok("Deleted Successfully!");
             }
             return NotFound();
         }
-
-       
-        
-
     }
 }
