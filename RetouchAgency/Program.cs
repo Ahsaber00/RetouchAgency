@@ -70,6 +70,7 @@ namespace RetouchAgency
             // Register Repositories
             builder.Services.AddScoped<IUserManager, UserManager>();
             builder.Services.AddScoped<IEventBookingManager, EventBookingManager>();
+            builder.Services.AddScoped<IEventManager, EventManager>();
 
 
             //Register Managers

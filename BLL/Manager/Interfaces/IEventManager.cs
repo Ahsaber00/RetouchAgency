@@ -1,4 +1,5 @@
-﻿using DAL.Models;
+﻿using BLL.DTOs;
+using DAL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,27 +11,24 @@ namespace BLL.Manager.Interfaces
     public interface IEventManager
     {
         // Get all events
-        Task<IEnumerable<Event>> GetAllEventsAsync();
+        Task<IEnumerable<EventDTO>> GetAllEventsAsync();
 
         // Get a single event by Id
-        Task<Event> GetEventByIdAsync(int eventId);
+        Task<EventDTO?> GetEventByIdAsync(int eventId);
 
         // Create a new event
-        Task<Event> CreateEventAsync(Event newEvent);
+        Task<int> CreateEventAsync(EventCreateDTO eventCreateDto, int postedByUserId);
 
         // Update an event
-        Task<Event> UpdateEventAsync(Event updatedEvent);
+        Task UpdateEventAsync(int id, EventCreateDTO eventUpdateDto, int requestingUserId);
 
         // Delete an event
-        Task<bool> DeleteEventAsync(int eventId);
+        Task DeleteEventAsync(int eventId, int requestingUserId);
 
-        // Book an event for a user
-        Task<EventBooking> BookEventAsync(int eventId, int userId);
+        // Get events by user
+        Task<IEnumerable<EventDTO>> GetEventsByUserAsync(int userId);
 
-        // Cancel a booking
-        Task<bool> CancelBookingAsync(int bookingId, int userId);
-
-        // Get all bookings for an event
-        Task<IEnumerable<EventBooking>> GetBookingsByEventAsync(int eventId);
+        // Check if user owns the event
+        Task<bool> IsUserEventOwnerAsync(int eventId, int userId);
     }
 }
