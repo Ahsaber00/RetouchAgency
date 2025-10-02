@@ -13,10 +13,13 @@ namespace DAL.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        public string Name { get; set; }
+        public required string Name { get; set; }
         [Required]
-        public string Description { get; set; }
+        public required string Description { get; set; }
         [ForeignKey("User")]
-        public int UserId {  get; set; }
+        public int UserId { get; set; }
+
+        // Navigation property
+        public virtual User? User { get; set; }
     }
 }
