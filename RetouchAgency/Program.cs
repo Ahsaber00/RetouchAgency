@@ -80,7 +80,6 @@ namespace RetouchAgency
             //Register Managers
             builder.Services.AddScoped<IOpportunityManager,OpportunityManager>();
             builder.Services.AddScoped<IEventManager, EventManager>();
-            builder.Services.AddScoped<IOpportunityManager, OpportunityManager>();
             builder.Services.AddScoped<IApplicationManager, ApplicationManager>();
 
 
