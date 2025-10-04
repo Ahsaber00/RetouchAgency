@@ -20,6 +20,7 @@ namespace DAL.Models
         [ForeignKey("Department")]
         public int DepartmentId { get; set; }
 
+        [StringLength(100)]
         public string Position { get; set; }
 
         public bool IsHead { get; set; }

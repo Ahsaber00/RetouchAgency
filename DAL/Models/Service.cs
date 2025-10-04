@@ -13,8 +13,12 @@ namespace DAL.Models
         [Key]
         public int Id { get; set; }
         [Required]
+
+        [StringLength(100)]
         public required string Name { get; set; }
+
         [Required]
+        [StringLength(1000)]
         public required string Description { get; set; }
         [ForeignKey("User")]
         public int UserId { get; set; }
