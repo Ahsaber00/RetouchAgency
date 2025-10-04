@@ -18,7 +18,7 @@ namespace DAL.Models
         public int PostedByUserId { get; set; }
 
         [Required]
-        public string Title { get; set; }
+        public required string Title { get; set; }
 
         public int Capacity { get; set; } // Max attendees
 
@@ -26,7 +26,10 @@ namespace DAL.Models
 
         public DateTime EndDatetime { get; set; }
 
-        public virtual User PostedByUser { get; set; }
-        public virtual ICollection<EventBooking> EventBookings { get; set; }
+        [StringLength(500)]
+        public string? CoverImageUrl { get; set; }
+
+        public virtual User? PostedByUser { get; set; }
+        public virtual ICollection<EventBooking> EventBookings { get; set; } = new List<EventBooking>();
     }
 }

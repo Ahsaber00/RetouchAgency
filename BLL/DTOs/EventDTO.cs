@@ -30,6 +30,7 @@ public class EventDTO
 
     // Read-only properties for response
     public string? PostedByUserName { get; set; }
+    public string? CoverImageUrl { get; set; }
     public int AvailableSlots { get; set; }
     public int BookingsCount { get; set; }
 }

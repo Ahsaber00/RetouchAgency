@@ -3,6 +3,7 @@ using System.Text;
 using BLL;
 using BLL.Manager;
 using BLL.Manager.Interfaces;
+using BLL.Services;
 using DAL.Interfaces;
 using DAL.Models;
 using DAL.Repositories;
@@ -67,14 +68,14 @@ namespace RetouchAgency
             // Register the authorization handler
             builder.Services.AddScoped<IAuthorizationHandler, AdminOrOwnerHandler>();
 
-            // Register Repositories
+            // Register Services
+            builder.Services.AddScoped<IFileUploadService, FileUploadService>();
+
+            // Register Managers
             builder.Services.AddScoped<IUserManager, UserManager>();
             builder.Services.AddScoped<IEventBookingManager, EventBookingManager>();
             builder.Services.AddScoped<IEventManager, EventManager>();
-
-
-            //Register Managers
-            builder.Services.AddScoped<IOpportunityManager,OpportunityManager>();
+            builder.Services.AddScoped<IOpportunityManager, OpportunityManager>();
             builder.Services.AddScoped<IApplicationManager, ApplicationManager>();
 
 
@@ -88,6 +89,9 @@ namespace RetouchAgency
             }
 
             app.UseHttpsRedirection();
+
+            // Enable static file serving
+            app.UseStaticFiles();
 
             app.UseAuthentication();
             app.UseAuthorization();

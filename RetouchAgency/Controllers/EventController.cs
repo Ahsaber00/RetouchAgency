@@ -185,5 +185,80 @@ namespace RetouchAgency.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        /// <summary>
+        /// Upload cover image for an event (Admin or event owner only)
+        /// </summary>
+        [HttpPost("{id}/cover-image")]
+        [Authorize]
+        public async Task<IActionResult> UploadEventCoverImage(int id, IFormFile imageFile)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (userIdClaim == null || !int.TryParse(userIdClaim, out var userId))
+                    return Unauthorized("Invalid token.");
+
+                if (imageFile == null || imageFile.Length == 0)
+                    return BadRequest("Please select an image file.");
+
+                var imageUrl = await _eventManager.UploadEventCoverImageAsync(id, imageFile, userId);
+                return Ok(new { imageUrl });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Update cover image URL for an event (Admin or event owner only)
+        /// </summary>
+        [HttpPut("{id}/cover-image")]
+        [Authorize]
+        public async Task<IActionResult> UpdateEventCoverImage(int id, [FromBody] UpdateCoverImageRequest request)
+        {
+            if (string.IsNullOrEmpty(request.ImageUrl))
+                return BadRequest("Image URL is required.");
+
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (userIdClaim == null || !int.TryParse(userIdClaim, out var userId))
+                    return Unauthorized("Invalid token.");
+
+                await _eventManager.UpdateEventCoverImageAsync(id, request.ImageUrl, userId);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+    }
+
+    public class UpdateCoverImageRequest
+    {
+        public required string ImageUrl { get; set; }
     }
 }

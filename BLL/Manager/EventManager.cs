@@ -1,12 +1,15 @@
 ﻿using BLL.DTOs;
 using BLL.Manager.Interfaces;
+using BLL.Services;
 using DAL.Interfaces;
 using DAL.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace BLL.Manager;
-public class EventManager(IUnitOfWork unitOfWork) : IEventManager
+public class EventManager(IUnitOfWork unitOfWork, IFileUploadService fileUploadService) : IEventManager
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IFileUploadService _fileUploadService = fileUploadService;
 
     public async Task<IEnumerable<EventDTO>> GetAllEventsAsync()
     {
@@ -96,6 +99,56 @@ public class EventManager(IUnitOfWork unitOfWork) : IEventManager
         return (await _unitOfWork.Events.GetByIdAsync(eventId))?.PostedByUserId == userId;
     }
 
+    public async Task<string> UploadEventCoverImageAsync(int eventId, IFormFile imageFile, int requestingUserId)
+    {
+        // Check if event exists and user has permission
+        var eventEntity = await _unitOfWork.Events.GetByIdAsync(eventId);
+        if (eventEntity == null)
+            throw new KeyNotFoundException("Event not found.");
+
+        // Check if user is owner or admin (you can add admin check here)
+        if (eventEntity.PostedByUserId != requestingUserId)
+            throw new UnauthorizedAccessException("You can only upload images for your own events.");
+
+        // Delete old image if exists
+        if (!string.IsNullOrEmpty(eventEntity.CoverImageUrl))
+        {
+            await _fileUploadService.DeleteEventImageAsync(eventEntity.CoverImageUrl);
+        }
+
+        // Upload new image
+        var imageUrl = await _fileUploadService.UploadEventImageAsync(imageFile);
+
+        // Update event with new image URL
+        eventEntity.CoverImageUrl = imageUrl;
+        _unitOfWork.Events.Update(eventEntity);
+        await _unitOfWork.SaveAllAsync();
+
+        return imageUrl;
+    }
+
+    public async Task UpdateEventCoverImageAsync(int eventId, string imageUrl, int requestingUserId)
+    {
+        // Check if event exists and user has permission
+        var eventEntity = await _unitOfWork.Events.GetByIdAsync(eventId)
+            ?? throw new KeyNotFoundException("Event not found.");
+
+        // Check if user is owner or admin (you can add admin check here)
+        if (eventEntity.PostedByUserId != requestingUserId)
+            throw new UnauthorizedAccessException("You can only update images for your own events.");
+
+        // Delete old image if exists and different from new one
+        if (!string.IsNullOrEmpty(eventEntity.CoverImageUrl) && eventEntity.CoverImageUrl != imageUrl)
+        {
+            await _fileUploadService.DeleteEventImageAsync(eventEntity.CoverImageUrl);
+        }
+
+        // Update event with new image URL
+        eventEntity.CoverImageUrl = imageUrl;
+        _unitOfWork.Events.Update(eventEntity);
+        await _unitOfWork.SaveAllAsync();
+    }
+
     private EventDTO MapToEventDTO(Event eventEntity)
     {
         var bookingsCount = eventEntity.EventBookings?.Count ?? 0;
@@ -108,6 +161,7 @@ public class EventManager(IUnitOfWork unitOfWork) : IEventManager
             EndDatetime = eventEntity.EndDatetime,
             PostedByUserId = eventEntity.PostedByUserId,
             PostedByUserName = eventEntity.PostedByUser?.FirstName + " " + eventEntity.PostedByUser?.LastName,
+            CoverImageUrl = eventEntity.CoverImageUrl,
             BookingsCount = bookingsCount,
             AvailableSlots = eventEntity.Capacity - bookingsCount
         };
