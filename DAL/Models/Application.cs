@@ -14,18 +14,33 @@ namespace DAL.Models
         [Column("ApplicationId")]
         public int Id { get; set; }
 
+        
         [ForeignKey("User")]
-        public int ? UserId { get; set; }
-
+        public int ? UserId { get; set; }   
+        [Required]
         [ForeignKey("Opportunity")]
         public int OpportunityId { get; set; }
-        public string ApplicantPhoneNumber {  get; set; }
-        public string ApplicantUniversity {  get; set; }
+
+        [Required]
+        [Phone]
+        [MaxLength(20)] 
+        public string ApplicantPhoneNumber { get; set; }
+
+        [Required]
+        [StringLength(150)]
+        public string ApplicantUniversity { get; set; }
+
+        [Required]
+        [MaxLength(500)] 
         public string ResumeUrl { get; set; }
 
-        public string Status { get; set; } // 'Submitted', 'Reviewed', 'Hired'
+        [Required]
+        [StringLength(50)]
+        public string Status { get; set; } = "Submitted"; // default status
 
+        // Navigation Properties
         public virtual User User { get; set; }
         public virtual Opportunity Opportunity { get; set; }
     }
+
 }

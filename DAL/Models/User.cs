@@ -15,23 +15,34 @@ namespace DAL.Models
         public int Id { get; set; }
 
         [Required]
-        public string FirstName { get; set; }
+        [StringLength(100)]
+        public string FirstName { get; set; } = string.Empty;
 
         [Required]
-        public string LastName { get; set; }
+        [StringLength(100)]
+        public string LastName { get; set; } = string.Empty;
 
         [Required]
-        public string Email { get; set; }
+        [EmailAddress]
+        [StringLength(255)]
+        public string Email { get; set; } = string.Empty;
 
-        public string PasswordHash { get; set; }
+        [Required]
+        public string PasswordHash { get; set; } = string.Empty;
 
-        public string GoogleId { get; set; }
+        [StringLength(255)]
+        public string? GoogleId { get; set; }
 
-        public string AuthMethod { get; set; } // 'local', 'google'
+        [Required]
+        [StringLength(20)]
+        public string AuthMethod { get; set; } = "local"; // 'local' or 'google'
 
-        public string Role { get; set; } // 'admin', 'applicant'
+        [Required]
+        [StringLength(20)]
+        public string Role { get; set; } = "applicant"; // 'admin', 'applicant'
 
-        public DateTime CreatedAt { get; set; }
+        [Required]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public virtual ICollection<Application>? Applications { get; set; }
         public virtual ICollection<Opportunity>? Opportunities { get; set; }

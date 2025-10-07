@@ -21,10 +21,13 @@ namespace DAL.Models
         public int UserId { get; set; }
 
         [Required]
+        [StringLength(150)]
         public string Title { get; set; }
 
+        [StringLength(20)]
         public string Type { get; set; } // 'Job', 'Internship'
 
+        [StringLength(20)]
         public string Status { get; set; } // 'Scheduled', 'Open', 'Closed'
 
         public DateTime ApplicationStartDate { get; set; }
