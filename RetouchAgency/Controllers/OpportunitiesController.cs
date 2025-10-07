@@ -3,6 +3,7 @@ using BLL.Manager.Interfaces;
 using DAL.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ApiRetouchAgency.Controllers
 {
@@ -40,6 +41,11 @@ namespace ApiRetouchAgency.Controllers
         {
             try
             {
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userIdClaim))
+                    return Unauthorized("User ID not found in token.");
+
+                int userId = int.Parse(userIdClaim);
                 var opportunity = await _opportunityManager.CreateOpportunityAsync(dto);
                 return Ok(opportunity);
             }
