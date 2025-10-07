@@ -18,7 +18,7 @@ namespace BLL.Manager
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<ApplicationDto> CreateApplicationAsync(CreateApplicationDto dto)
+        public async Task<ApplicationDto> CreateApplicationAsync(CreateApplicationDto dto, int userId)
         {
 
             string resumeUrl = null;
@@ -44,7 +44,7 @@ namespace BLL.Manager
 
             Application application = new Application
             {
-                UserId = dto.UserId,
+                UserId = userId,
                 OpportunityId = dto.OpportunityId,
                 ApplicantPhoneNumber = dto.PhoneNumber,
                 ApplicantUniversity = dto.University.Trim().ToLower(),
