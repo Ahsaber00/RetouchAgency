@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace BLL.DTOs;
 
@@ -50,6 +51,9 @@ public class EventCreateDTO
 
     [Required(ErrorMessage = "End date and time is required")]
     public DateTime EndDatetime { get; set; }
+
+    // Optional cover image file
+    public IFormFile? CoverImageFile { get; set; }
 
     // PostedByUserId will be set from the authenticated user's claims
 }

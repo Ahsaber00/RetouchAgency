@@ -31,11 +31,5 @@ namespace BLL.Manager.Interfaces
 
         // Check if user owns the event
         Task<bool> IsUserEventOwnerAsync(int eventId, int userId);
-
-        // Upload cover image for event
-        Task<string> UploadEventCoverImageAsync(int eventId, IFormFile imageFile, int requestingUserId);
-
-        // Update event cover image
-        Task UpdateEventCoverImageAsync(int eventId, string imageUrl, int requestingUserId);
     }
 }
