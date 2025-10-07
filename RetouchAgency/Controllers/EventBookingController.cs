@@ -61,13 +61,11 @@ public class EventBookingController(IEventBookingManager eventBookingManager) : 
             return BadRequest(ModelState);
 
         var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-        var isAdmin = User.IsInRole(UserRole.Admin);
-        if (!isAdmin && (userIdClaim == null || userIdClaim != booking.UserId.ToString()))
-            return Forbid();
+        var userID = userIdClaim != null ? int.Parse(userIdClaim) : 0;
     
         try
         {
-            await _eventBookingManager.BookEventAsync(booking);
+            await _eventBookingManager.BookEventAsync(booking, userID);
         }
         catch (InvalidOperationException ex)
         {

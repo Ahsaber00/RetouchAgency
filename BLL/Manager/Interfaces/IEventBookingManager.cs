@@ -4,7 +4,7 @@ using BLL.DTOs;
 
 public interface IEventBookingManager
 {
-    Task BookEventAsync(EventBookingDTO bookingDto);
+    Task BookEventAsync(EventBookingDTO bookingDto, int userID);
     Task CancelBookingAsync(int bookingId);
     Task<EventBookingResponseDTO?> GetEventBookingByIdAsync(int id);
     Task<IEnumerable<EventBookingResponseDTO>> GetAllEventBookingsAsync();

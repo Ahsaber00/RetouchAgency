@@ -55,7 +55,7 @@ namespace RetouchAgency.Controllers
         /// Create a new event (Authenticated users only)
         /// </summary>
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<IActionResult> CreateEvent([FromForm] EventCreateDTO eventCreateDto)
         {
             if (!ModelState.IsValid)
@@ -84,7 +84,7 @@ namespace RetouchAgency.Controllers
         /// Update an event (Admin or event owner only)
         /// </summary>
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<IActionResult> UpdateEvent(int id, [FromForm] EventCreateDTO eventUpdateDto)
         {
             if (!ModelState.IsValid)
@@ -121,7 +121,7 @@ namespace RetouchAgency.Controllers
         /// Delete an event (Admin or event owner only)
         /// </summary>
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<IActionResult> DeleteEvent(int id)
         {
             try

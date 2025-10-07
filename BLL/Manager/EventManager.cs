@@ -81,9 +81,7 @@ public class EventManager(IUnitOfWork unitOfWork) : IEventManager
         var eventEntity = await _unitOfWork.Events.GetByIdAsync(id)
             ?? throw new KeyNotFoundException("Event not found.");
 
-        // Check if user is admin or event owner
-        var requestingUser = await _unitOfWork.Users.GetByIdAsync(requestingUserId);
-        if (requestingUser?.Role != UserRole.Admin && eventEntity.PostedByUserId != requestingUserId)
+        if (eventEntity.PostedByUserId != requestingUserId)
             throw new UnauthorizedAccessException("You do not have permission to update this event.");
 
         // Validate dates

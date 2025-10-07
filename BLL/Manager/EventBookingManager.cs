@@ -36,19 +36,20 @@ public class EventBookingManager(IUnitOfWork unitOfWork) : IEventBookingManager
         };
     }
 
-    
 
-    public async Task BookEventAsync(EventBookingDTO bookingDTO)
+    public async Task BookEventAsync(EventBookingDTO bookingDTO, int userID)
     {
         if (await _unitOfWork.EventBookings.CheckBookingExistsAsync(bookingDTO.EventId, bookingDTO.UserId))
             throw new InvalidOperationException("User has already booked this event.");
+
         var eventEntity = await _unitOfWork.Events.GetByIdAsync(bookingDTO.EventId)
             ?? throw new KeyNotFoundException($"Event with ID {bookingDTO.EventId} does not exist.");
+
         if (eventEntity.Capacity <= 0)
             throw new InvalidOperationException("Event is fully booked.");
         var booking = new EventBooking
         {
-            UserId = bookingDTO.UserId,
+            UserId = userID,
             EventId = bookingDTO.EventId,
         };
         await _unitOfWork.EventBookings.AddAsync(booking);
