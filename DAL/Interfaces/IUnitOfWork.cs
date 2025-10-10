@@ -16,6 +16,9 @@ namespace DAL.Interfaces
         IApplicationRepository Applications { get; }
         IEventBookingRepository EventBookings { get; }
         IUserRepository Users { get; }
+        IUserRequestRepository UserRequests { get; }
+        ICourseRepository Courses { get; }
+        IUserRequestCourseRepository UserRequestedCourses { get; }
 
         Task<int> SaveAllAsync();
     }

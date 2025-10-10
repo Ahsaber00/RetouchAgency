@@ -46,7 +46,7 @@ namespace ApiRetouchAgency.Controllers
                     return Unauthorized("User ID not found in token.");
 
                 int userId = int.Parse(userIdClaim);
-                var opportunity = await _opportunityManager.CreateOpportunityAsync(dto);
+                var opportunity = await _opportunityManager.CreateOpportunityAsync(dto, userId);
                 return Ok(opportunity);
             }
             catch (Exception ex)

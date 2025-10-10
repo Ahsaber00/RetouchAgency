@@ -25,6 +25,13 @@ namespace DAL.Repositories
         public IEventBookingRepository EventBookings {get;}
 
         public IUserRepository Users {get;}
+
+        public IUserRequestRepository UserRequests { get; }
+
+        public ICourseRepository Courses { get; }
+
+        public IUserRequestCourseRepository UserRequestedCourses { get; }
+
         public UnitOfWork(ApplicationContext context)
         {
             _context = context;
@@ -35,6 +42,10 @@ namespace DAL.Repositories
             Applications=new ApplicationRepository(context);
             EventBookings=new EventBookingRepository(context);
             Users = new UserRepository(context);
+            UserRequests=new UserRequestRepository(context);
+            Courses=new CourseRepository(context);
+            UserRequestedCourses=new UserRequestCourseRepository(context);
+
         }
 
         public async Task<int> SaveAllAsync()
