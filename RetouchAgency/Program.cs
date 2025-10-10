@@ -1,5 +1,4 @@
 
-using System.Text;
 using BLL;
 using BLL.Manager;
 using BLL.Manager.Interfaces;
@@ -11,7 +10,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using RetouchAgency.Authorization;
+using System.Text;
 
 namespace RetouchAgency
 {
@@ -26,7 +27,32 @@ namespace RetouchAgency
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                // Add JWT Authentication support in Swagger
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please insert JWT with Bearer into field (e.g., 'Bearer <token>')",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+           {
+                new OpenApiSecurityScheme
+                {
+                      Reference = new OpenApiReference
+                      {
+                           Type = ReferenceType.SecurityScheme,
+                           Id = "Bearer"
+                      }
+                },
+                        new string[] {}
+           }
+    });
+            });
             builder.Services.AddDbContext<ApplicationContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -75,12 +101,10 @@ namespace RetouchAgency
             builder.Services.AddScoped<IUserManager, UserManager>();
             builder.Services.AddScoped<IEventBookingManager, EventBookingManager>();
             builder.Services.AddScoped<IServiceManager, ServiceManager>();
-
-
-            //Register Managers
             builder.Services.AddScoped<IOpportunityManager,OpportunityManager>();
             builder.Services.AddScoped<IEventManager, EventManager>();
             builder.Services.AddScoped<IApplicationManager, ApplicationManager>();
+            builder.Services.AddScoped<IUserRequestsManager,UserRequestManager>();  
 
 
             var app = builder.Build();
