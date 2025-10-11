@@ -19,7 +19,9 @@ namespace DAL.Models
         public DbSet<Event> Events { get; set; }
         public DbSet<EventBooking> EventBookings { get; set; }
         public DbSet<Service> Services { get; set; }
-
+        public DbSet<Course> Courses { get; set; }
+        public DbSet<UserRequest> UserRequests { get; set; }
+        public DbSet<UserRequestCourse> UserRequestCourses { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -127,6 +129,54 @@ namespace DAL.Models
                 ApplicationStartDate = new DateTime(2025, 9, 12),
                 ApplicationEndDate = new DateTime(2025, 9, 22)
             });
+
+            modelBuilder.Entity<Service>().HasData(
+                    new Service
+                    {
+                        Id = 1,
+                        Name = "Marketing",
+                        Description = "Comprehensive marketing services including digital campaigns, social media management, and promotional strategies.",
+                        UserId = 15 // assuming seeded admin user or adjust later
+                    },
+                    new Service
+                    {
+                        Id = 2,
+                        Name = "Brand Development",
+                        Description = "Brand identity creation, logo design, and strategic brand positioning services.",
+                        UserId = 15
+                    }
+            );
+
+            modelBuilder.Entity<Course>().HasData(
+                        new Course
+                        {
+                            Id = 1,
+                            Name = "Digital Marketing Fundamentals",
+                            Description = "Learn the essential skills for online marketing including SEO, SEM, and PPC.",
+                            ServiceId = 1
+                        },
+                        new Course
+                        {
+                            Id = 2,
+                            Name = "Social Media Marketing",
+                            Description = "Develop effective strategies to grow businesses on Facebook, Instagram, and LinkedIn.",
+                            ServiceId = 1
+                        },
+                        new Course
+                        {
+                            Id = 3,
+                            Name = "Email Marketing Strategies",
+                            Description = "Learn to design and execute email campaigns that convert leads into customers.",
+                            ServiceId = 1
+                        },
+                        new Course
+                        {
+                            Id = 4,
+                            Name = "Content Marketing & SEO",
+                            Description = "Master content creation and optimization techniques to drive organic growth.",
+                            ServiceId = 1
+                        }
+            );
 
         }
 

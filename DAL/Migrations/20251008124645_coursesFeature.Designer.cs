@@ -4,6 +4,7 @@ using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20251008124645_coursesFeature")]
+    partial class coursesFeature
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,6 +81,9 @@ namespace DAL.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -91,36 +97,6 @@ namespace DAL.Migrations
                     b.HasIndex("ServiceId");
 
                     b.ToTable("Courses");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Learn the essential skills for online marketing including SEO, SEM, and PPC.",
-                            Name = "Digital Marketing Fundamentals",
-                            ServiceId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Develop effective strategies to grow businesses on Facebook, Instagram, and LinkedIn.",
-                            Name = "Social Media Marketing",
-                            ServiceId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Learn to design and execute email campaigns that convert leads into customers.",
-                            Name = "Email Marketing Strategies",
-                            ServiceId = 1
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Description = "Master content creation and optimization techniques to drive organic growth.",
-                            Name = "Content Marketing & SEO",
-                            ServiceId = 1
-                        });
                 });
 
             modelBuilder.Entity("DAL.Models.Department", b =>
@@ -413,22 +389,6 @@ namespace DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Services");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Comprehensive marketing services including digital campaigns, social media management, and promotional strategies.",
-                            Name = "Marketing",
-                            UserId = 15
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Brand identity creation, logo design, and strategic brand positioning services.",
-                            Name = "Brand Development",
-                            UserId = 15
-                        });
                 });
 
             modelBuilder.Entity("DAL.Models.TeamMember", b =>
@@ -472,6 +432,11 @@ namespace DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AuthMethod")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -484,6 +449,10 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("GoogleId")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -520,10 +489,6 @@ namespace DAL.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -544,6 +509,10 @@ namespace DAL.Migrations
 
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");

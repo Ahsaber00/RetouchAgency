@@ -26,7 +26,7 @@ namespace BLL.Manager
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 Email = u.Email,
-                AuthMethod = u.AuthMethod,
+               
                 Role = u.Role,
                 CreatedAt = u.CreatedAt
             });
@@ -42,7 +42,7 @@ namespace BLL.Manager
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                AuthMethod = user.AuthMethod,
+                
                 Role = user.Role,
                 CreatedAt = user.CreatedAt
             };
@@ -68,8 +68,7 @@ namespace BLL.Manager
                 FirstName = userDTO.FirstName,
                 LastName = userDTO.LastName,
                 Email = userDTO.Email,
-                GoogleId = userDTO.GoogleId,
-                AuthMethod = userDTO.AuthMethod,
+                
                 Role = userDTO.Role,
                 CreatedAt = DateTime.UtcNow
             };

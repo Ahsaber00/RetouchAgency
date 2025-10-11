@@ -10,7 +10,7 @@ namespace BLL.Manager.Interfaces
     public interface IApplicationManager
     {
         // Create (User applies to an opportunity)
-        Task<ApplicationDto> CreateApplicationAsync(CreateApplicationDto dto);
+        Task<ApplicationDto> CreateApplicationAsync(CreateApplicationDto dto,int userId);
 
         Task<IEnumerable<ApplicationDto>> GetAllApplicationsAsync(string? status = null);
 

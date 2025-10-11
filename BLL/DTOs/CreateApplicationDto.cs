@@ -9,7 +9,6 @@ namespace BLL.DTOs
 {
     public class CreateApplicationDto
     {
-        public int UserId { get; set; }
         public int OpportunityId { get; set; }
         public IFormFile ResumeFile { get; set; }
 

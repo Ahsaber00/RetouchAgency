@@ -9,7 +9,6 @@ namespace BLL.DTOs
     public class CreateOpportunityDto
     {
         public int DepartmentId { get; set; }
-        public int UserId { get; set; }  // Who posted it
 
         public string Title { get; set; }
         public string Type { get; set; }   // Job / Internship

@@ -9,7 +9,7 @@ namespace BLL.Manager.Interfaces
 {
     public interface IOpportunityManager
     {
-        Task<OpportunityDto> CreateOpportunityAsync(CreateOpportunityDto dto);
+        Task<OpportunityDto> CreateOpportunityAsync(CreateOpportunityDto dto,int userId);
         Task<OpportunityDto> UpdateOpportunityAsync(int id, UpdateOpportunityDto dto);
         Task<bool> DeleteOpportunityAsync(int id);
         Task<OpportunityDto> GetOpportunityByIdAsync(int id);

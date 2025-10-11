@@ -66,9 +66,14 @@ namespace DAL.Repositories
         //---------------------------------------------------------------------------------------------------------------------------
         //will be implemented when needed
 
-        public Task<IQueryable<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
+        public async Task<IQueryable<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
         {
-            throw new NotImplementedException();
+            IQueryable<T> query = _context.Set<T>().AsNoTracking();
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+            return query;
         }
 
         public async Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includes)

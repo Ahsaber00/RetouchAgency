@@ -18,12 +18,12 @@ namespace BLL.Manager
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<OpportunityDto> CreateOpportunityAsync(CreateOpportunityDto dto)
+        public async Task<OpportunityDto> CreateOpportunityAsync(CreateOpportunityDto dto,int userId)
         {
             var newOpportunity = new Opportunity
             {
                 DepartmentId = dto.DepartmentId,
-                UserId = dto.UserId,
+                UserId = userId,
                 Title = dto.Title,
                 Type = dto.Type.Trim().ToLower(),
                 Status = dto.Status.Trim().ToLower(),

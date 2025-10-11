@@ -26,9 +26,9 @@ public class AuthenticationController(IUserManager userManager) : ControllerBase
                 LastName = user.LastName,
                 Email = user.Email,
                 Password = user.Password,
-                AuthMethod = UserAuthMethod.Local, // Default to Local for sign-up
+                
                 Role = UserRole.Applicant, // Default role
-                GoogleId = user.GoogleId
+                
             };
             await _userManager.CreateUserAsync(userDTO);
             return CreatedAtAction(nameof(SignUp), new { id = userDTO.Id }, new { id = userDTO.Id });

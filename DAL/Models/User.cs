@@ -30,13 +30,6 @@ namespace DAL.Models
         [Required]
         public string PasswordHash { get; set; } = string.Empty;
 
-        [StringLength(255)]
-        public string? GoogleId { get; set; }
-
-        [Required]
-        [StringLength(20)]
-        public string AuthMethod { get; set; } = "local"; // 'local' or 'google'
-
         [Required]
         [StringLength(20)]
         public string Role { get; set; } = "applicant"; // 'admin', 'applicant'
