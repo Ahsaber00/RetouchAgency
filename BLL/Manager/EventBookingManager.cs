@@ -39,7 +39,7 @@ public class EventBookingManager(IUnitOfWork unitOfWork) : IEventBookingManager
 
     public async Task BookEventAsync(EventBookingDTO bookingDTO, int userID)
     {
-        if (await _unitOfWork.EventBookings.CheckBookingExistsAsync(bookingDTO.EventId, bookingDTO.UserId))
+        if (await _unitOfWork.EventBookings.CheckBookingExistsAsync(bookingDTO.EventId, userID))
             throw new InvalidOperationException("User has already booked this event.");
 
         var eventEntity = await _unitOfWork.Events.GetByIdAsync(bookingDTO.EventId)
@@ -55,7 +55,7 @@ public class EventBookingManager(IUnitOfWork unitOfWork) : IEventBookingManager
         await _unitOfWork.EventBookings.AddAsync(booking);
         eventEntity.Capacity--;
         _unitOfWork.Events.Update(eventEntity);
-        
+        await _unitOfWork.SaveAllAsync();
         return;
     }
 
@@ -92,5 +92,12 @@ public class EventBookingManager(IUnitOfWork unitOfWork) : IEventBookingManager
         var booking = await _unitOfWork.EventBookings.GetByIdAsync(bookingId)
             ?? throw new KeyNotFoundException($"Booking with ID {bookingId} not found.");
         await _unitOfWork.EventBookings.DeleteAsync(bookingId);
+        var eventEntity = await _unitOfWork.Events.GetByIdAsync(booking.EventId);
+        if (eventEntity != null)
+        {
+            eventEntity.Capacity++;
+            _unitOfWork.Events.Update(eventEntity);
+        }
+        await _unitOfWork.SaveAllAsync();
     }
 }

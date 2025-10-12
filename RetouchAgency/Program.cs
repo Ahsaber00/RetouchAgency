@@ -1,5 +1,6 @@
 
 using BLL;
+using BLL.Configuration;
 using BLL.Manager;
 using BLL.Manager.Interfaces;
 using BLL.Services;
@@ -39,20 +40,27 @@ namespace RetouchAgency
                     Scheme = "Bearer"
                 });
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-           {
-                new OpenApiSecurityScheme
                 {
-                      Reference = new OpenApiReference
-                      {
-                           Type = ReferenceType.SecurityScheme,
-                           Id = "Bearer"
-                      }
-                },
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
                         new string[] {}
-           }
-    });
+                    }
+                });
             });
+
+            // Register Email Settings
+            var emailSettings = builder.Configuration.GetSection("EmailSettings").Get<EmailSettings>();
+            if (emailSettings == null)
+                throw new InvalidOperationException("Email configuration is missing.");
+            builder.Services.AddSingleton(emailSettings);
+
             builder.Services.AddDbContext<ApplicationContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -60,12 +68,12 @@ namespace RetouchAgency
 
             // Register Unit of Work
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            
+
             var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>();
             if (jwtOptions == null)
                 throw new InvalidOperationException("JWT configuration is missing.");
             builder.Services.AddSingleton(jwtOptions);
-            
+
             builder.Services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
                 options.SaveToken = true;
@@ -79,18 +87,18 @@ namespace RetouchAgency
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey)),
                 };
             });
-            
+
             builder.Services.AddAuthorization(options =>
             {
                 // Register AdminOrOwner policy for default "id" parameter
                 options.AddPolicy("AdminOrOwner_id", policy =>
                     policy.Requirements.Add(new AdminOrOwnerRequirement("id")));
-                    
+
                 // You can add more policies for different parameter names if needed
                 // options.AddPolicy("AdminOrOwner_userId", policy =>
                 //     policy.Requirements.Add(new AdminOrOwnerRequirement("userId")));
             });
-            
+
             // Register the authorization handler
             builder.Services.AddScoped<IAuthorizationHandler, AdminOrOwnerHandler>();
 
@@ -101,10 +109,10 @@ namespace RetouchAgency
             builder.Services.AddScoped<IUserManager, UserManager>();
             builder.Services.AddScoped<IEventBookingManager, EventBookingManager>();
             builder.Services.AddScoped<IServiceManager, ServiceManager>();
-            builder.Services.AddScoped<IOpportunityManager,OpportunityManager>();
+            builder.Services.AddScoped<IOpportunityManager, OpportunityManager>();
             builder.Services.AddScoped<IEventManager, EventManager>();
             builder.Services.AddScoped<IApplicationManager, ApplicationManager>();
-            builder.Services.AddScoped<IUserRequestsManager,UserRequestManager>();  
+            builder.Services.AddScoped<IUserRequestsManager, UserRequestManager>();
 
 
             var app = builder.Build();

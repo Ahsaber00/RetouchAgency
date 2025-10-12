@@ -3,7 +3,6 @@ namespace BLL.DTOs;
 public class EventBookingDTO
 {
     public int EventId { get; set; }
-    public int UserId { get; set; }
     public DateTime BookingDate { get; internal set; } = DateTime.Now;
 }
 
