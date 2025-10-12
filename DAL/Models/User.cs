@@ -38,6 +38,8 @@ namespace DAL.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public bool IsEmailVerified { get; set; } = false;
+
+        [StringLength(6)]
         public string? EmailVerificationToken { get; set; }
         public DateTime? EmailVerificationTokenExpiry { get; set; }
 
