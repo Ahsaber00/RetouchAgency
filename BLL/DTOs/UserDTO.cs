@@ -30,5 +30,10 @@ public class UserLoginDTO
 public class EmailVerificationDTO
 {
     public string Email { get; set; }
-    public string Token { get; set; }
+    public string VerificationToken { get; set; }
+}
+
+public class ResendVerificationEmailDTO
+{
+    public string Email { get; set; }
 }

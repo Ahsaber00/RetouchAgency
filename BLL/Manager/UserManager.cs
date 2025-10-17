@@ -185,28 +185,19 @@ namespace BLL.Manager
                 ]
             );
 
-            // var token = new JwtSecurityToken(
-            //     issuer: _jwtOptions.Issuer,
-            //     audience: _jwtOptions.Audience,
-            //     claims: claims,
-            //     expires: DateTime.Now.AddMinutes(_jwtOptions.Lifetime),
-            //     signingCredentials: new SigningCredentials(
-            //         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SigningKey)),
-            //         SecurityAlgorithms.HmacSha256
-            //     )
-            // );
-            return tokenHandler.WriteToken(tokenHandler.CreateToken( new SecurityTokenDescriptor
-                {
-                    Expires = DateTime.Now.AddMinutes(_jwtOptions.Lifetime),
-                    Issuer = _jwtOptions.Issuer,
-                    Audience = _jwtOptions.Audience,
-                    SigningCredentials = new SigningCredentials(
+            var securityTokenDescriptor = new SecurityTokenDescriptor
+            {
+                Expires = DateTime.Now.AddMinutes(_jwtOptions.Lifetime),
+                Issuer = _jwtOptions.Issuer,
+                Audience = _jwtOptions.Audience,
+                SigningCredentials = new SigningCredentials(
                         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SigningKey)),
                         SecurityAlgorithms.HmacSha256
                     ),
-                    Subject = claimsIdentity
-                }
-            ));
+                Subject = claimsIdentity
+            };
+            var securityToken = tokenHandler.CreateToken(securityTokenDescriptor);
+            return tokenHandler.WriteToken(securityToken);
         }
 
         public async Task<bool> VerifyEmailAsync(EmailVerificationDTO verificationDto)
@@ -214,7 +205,7 @@ namespace BLL.Manager
             var user = await _unitOfWork.Users
                 .GetByEmailAsync(verificationDto.Email);
 
-            if (user == null || user.EmailVerificationToken != verificationDto.Token || user.EmailVerificationTokenExpiry < DateTime.UtcNow)
+            if (user == null || user.EmailVerificationToken != verificationDto.VerificationToken || user.EmailVerificationTokenExpiry < DateTime.UtcNow)
                 return false;
 
             user.IsEmailVerified = true;

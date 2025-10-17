@@ -62,8 +62,9 @@ public class AuthenticationController(IUserManager userManager) : ControllerBase
     }
 
     [HttpPost("resend-verification")]
-    public async Task<IActionResult> ResendVerificationEmail([FromBody] string email)
+    public async Task<IActionResult> ResendVerificationEmail([FromBody] ResendVerificationEmailDTO request)
     {
+        var email = request?.Email;
         if (string.IsNullOrEmpty(email))
             return BadRequest("Email is required.");
         try
